@@ -1,0 +1,165 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Palette as space-separated RGB triplets so Tailwind's
+   `bg-cream/85` style opacity modifiers resolve cleanly via
+   `rgb(var(--x) / <alpha-value>)` in the config. */
+:root {
+  /* Light mode (default) */
+  --cream: 244 235 209;     /* page bg — warm cream */
+  --cream-2: 234 223 192;   /* elevated surfaces */
+  --ink: 42 14 20;          /* primary text — deep wine */
+  --ink-soft: 107 69 80;    /* secondary text */
+  --wine: 139 42 58;        /* accent */
+  --rust: 184 90 46;        /* cab indicator */
+  --moss: 107 125 63;       /* walk indicator */
+  --line: 212 194 160;      /* dividers */
+}
+
+.dark {
+  --cream: 75 22 32;        /* page bg — deep wine */
+  --cream-2: 122 46 63;     /* elevated surfaces — lifted */
+  --ink: 255 246 224;       /* primary text — near-white cream */
+  --ink-soft: 242 228 188;  /* secondary text */
+  --wine: 244 181 185;      /* accent — light rose */
+  --rust: 240 168 120;      /* cab indicator */
+  --moss: 205 219 157;      /* walk indicator */
+  --line: 178 90 104;       /* dividers — brighter wine */
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: 'Inter Tight', ui-sans-serif, system-ui, sans-serif;
+  color: rgb(var(--ink));
+  background-color: rgb(var(--cream));
+  background-image: radial-gradient(rgb(var(--ink) / 0.06) 1px, transparent 1px);
+  background-size: 22px 22px;
+  background-position: 0 0;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+@layer base {
+  /* Fraunces axes — opsz, weight & soft */
+  .font-display {
+    font-variation-settings: 'opsz' 144, 'SOFT' 50, 'wght' 400;
+  }
+  .font-display-tight {
+    font-variation-settings: 'opsz' 12, 'SOFT' 0, 'wght' 500;
+  }
+}
+
+@layer components {
+  .eyebrow {
+    @apply font-mono text-[10px] tracking-[0.22em] uppercase text-ink-soft;
+  }
+
+  .pill {
+    @apply inline-flex items-center gap-1.5 font-mono text-[11px] tracking-wider uppercase
+           px-2.5 py-1 rounded-full;
+  }
+
+  /* Custom focus ring — visible but matches palette */
+  .focus-ring {
+    @apply outline-none focus-visible:ring-2 focus-visible:ring-wine/50 focus-visible:ring-offset-2 focus-visible:ring-offset-cream;
+  }
+}
+
+/* Slight tactile press */
+.press {
+  transition: transform 0.12s ease, background-color 0.18s ease, opacity 0.18s ease;
+}
+.press:active {
+  transform: scale(0.985);
+}
+
+/* ─── Leaflet pin styles ────────────────────────────────────── */
+.pin-wrap {
+  background: transparent !important;
+  border: none !important;
+}
+.pin {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: rgb(var(--cream));
+  border: 1.5px solid rgb(var(--wine));
+  color: rgb(var(--ink));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  box-shadow: 0 1px 4px rgb(var(--ink) / 0.18);
+  transition: transform 0.15s ease;
+}
+.pin:hover {
+  transform: scale(1.08);
+}
+.pin--visited {
+  background: rgb(var(--wine));
+  color: rgb(var(--cream));
+}
+
+/* Popup — uses the lifted cream-2 so it stands out from the map */
+.leaflet-popup-content-wrapper {
+  background: rgb(var(--cream-2)) !important;
+  color: rgb(var(--ink)) !important;
+  border-radius: 6px !important;
+  box-shadow: 0 6px 22px rgb(var(--ink) / 0.2) !important;
+  border: 1px solid rgb(var(--line));
+}
+.leaflet-popup-tip {
+  background: rgb(var(--cream-2)) !important;
+  border: 1px solid rgb(var(--line));
+}
+.leaflet-popup-content {
+  margin: 12px 14px !important;
+  font-family: 'Inter Tight', ui-sans-serif, system-ui, sans-serif;
+}
+.leaflet-popup-close-button {
+  color: rgb(var(--ink-soft)) !important;
+  padding: 6px 8px 0 0 !important;
+}
+
+/* Attribution — soft cream pill, theme-aware */
+.leaflet-control-attribution {
+  background: rgb(var(--cream) / 0.85) !important;
+  font-size: 9px !important;
+  color: rgb(var(--ink-soft)) !important;
+}
+.leaflet-control-attribution a {
+  color: rgb(var(--wine)) !important;
+}
+
+/* Match map container background to cream while tiles load */
+.leaflet-container {
+  background: rgb(var(--cream-2)) !important;
+  font-family: 'Inter Tight', ui-sans-serif, system-ui, sans-serif !important;
+}
+
+/* Dark-mode tile trick: invert flips dark<->light, hue-rotate(180)
+   puts hues back where they were so labels look natural. Sepia
+   warms the result toward the wine palette. Only affects raster
+   tiles — pins, polyline, popups, and controls live in other
+   panes and stay un-filtered. */
+.dark .leaflet-tile-pane {
+  filter: invert(0.92) hue-rotate(170deg) saturate(0.55) brightness(0.92) sepia(0.15);
+}
+
+/* Zoom buttons in the cream palette */
+.leaflet-bar a,
+.leaflet-bar a:hover {
+  background-color: rgb(var(--cream)) !important;
+  color: rgb(var(--ink)) !important;
+  border-color: rgb(var(--line)) !important;
+}
