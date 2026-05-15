@@ -19,9 +19,7 @@
       (function () {
         try {
           var raw = localStorage.getItem('mga-theme');
-          var theme = raw
-            ? JSON.parse(raw)
-            : (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+          var theme = raw ? JSON.parse(raw) : 'light';
           if (theme === 'dark') document.documentElement.classList.add('dark');
           var meta = document.querySelector('meta[name="theme-color"]');
           if (meta) meta.setAttribute('content', theme === 'dark' ? '#4B1620' : '#F4EBD1');

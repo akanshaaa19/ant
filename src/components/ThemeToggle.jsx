@@ -4,15 +4,8 @@ import { useLocalStorage } from '../hooks/useLocalStorage.js'
 
 const THEME_COLORS = { light: '#F4EBD1', dark: '#4B1620' }
 
-const initialTheme = () => {
-  if (typeof window === 'undefined') return 'light'
-  return window.matchMedia('(prefers-color-scheme: dark)').matches
-    ? 'dark'
-    : 'light'
-}
-
 export default function ThemeToggle() {
-  const [theme, setTheme] = useLocalStorage('mga-theme', initialTheme())
+  const [theme, setTheme] = useLocalStorage('mga-theme', 'light')
 
   useEffect(() => {
     document.documentElement.classList.toggle('dark', theme === 'dark')
