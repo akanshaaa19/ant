@@ -1,12 +1,11 @@
 import data from '../data/galleries.json'
 
-// Single seam for data access. Today: synchronous import.
-// Tomorrow: swap the body for `useEffect(() => fetch(...))`
-// without touching any consuming component.
+// Master list of all Mumbai galleries — pure metadata, no route info.
+// Route-specific ordering / clustering lives in useThursdays / curated walks.
 export function useGalleries() {
   return {
-    clusters: data.clusters,
     galleries: data.galleries,
+    byId: Object.fromEntries(data.galleries.map((g) => [g.id, g])),
     loading: false,
     error: null,
   }

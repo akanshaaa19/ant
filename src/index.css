@@ -110,6 +110,20 @@ body {
   color: rgb(var(--cream));
 }
 
+/* Smaller dot pin for the browse (Home) map — no number, no route. */
+.pin-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: rgb(var(--wine));
+  border: 2px solid rgb(var(--cream));
+  box-shadow: 0 1px 3px rgb(var(--ink) / 0.25);
+  transition: transform 0.15s ease;
+}
+.pin-dot:hover {
+  transform: scale(1.25);
+}
+
 /* Popup — uses the lifted cream-2 so it stands out from the map */
 .leaflet-popup-content-wrapper {
   background: rgb(var(--cream-2)) !important;

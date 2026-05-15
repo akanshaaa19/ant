@@ -1,105 +1,140 @@
-# Art Night Thursday — Mumbai
+# Mumbai Galleries
 
-A single-page React app for walking 24 Mumbai art galleries, north to south,
-during Art Night Thursday. Visual overview map at the top, six clustered route
-sections in the middle, and a compact tick-as-you-go checklist at the bottom.
-Visited state lives in `localStorage` — close the tab mid-walk and your
-progress survives.
+A React app for browsing Mumbai's art galleries, exploring the curated **Art
+Night Thursday** route each week, and building your own walks. Three pages:
+
+- **/** — map of all galleries + entry points to the next Thursday and the
+  custom-walk builder
+- **/thursday/:slug** — a curated Thursday walk (numbered route, segments,
+  visited progress saved per-walk)
+- **/curate** — two-step walk builder: pick galleries, then drag to reorder.
+  Visited tracking saved on-device.
 
 ## Quick start
 
 ```bash
 npm install
-npm run dev
+npm run dev          # http://localhost:5173
+npm run build        # static build to dist/
+npm run preview      # serve dist/ locally
 ```
 
-Then open the URL Vite prints (usually <http://localhost:5173>).
-
-To produce a static build:
-
-```bash
-npm run build
-npm run preview   # serve the build locally
-```
-
-The `dist/` directory drops into any static host (Netlify, Vercel, Cloudflare
-Pages, GitHub Pages, S3 + CloudFront, etc.).
+`dist/` drops into any static host (Netlify, Vercel, Cloudflare Pages, etc.).
+The app uses BrowserRouter — configure the host to rewrite unknown paths to
+`index.html`.
 
 ## Stack
 
 - **Vite + React** (JS, no TypeScript)
+- **react-router-dom** for navigation
 - **Tailwind CSS** with a custom editorial palette (cream, wine, rust, moss)
-- **Leaflet + react-leaflet** with CartoDB Positron tiles for the real Mumbai
-  map (no API key, free under OSM + CARTO attribution)
+- **Leaflet + react-leaflet** with CartoDB Positron tiles (no API key)
+- **@dnd-kit/sortable** for drag-to-reorder on the Curate page
 - **lucide-react** for icons
-- Pure client-side. No backend, no analytics, no tracking.
-- Persists progress in `localStorage` under the key `mga-gallery-visited`.
+- Pure client-side. Visited state persists in `localStorage`.
 
 ## Project layout
 
 ```
 src/
-  App.jsx                      // composition + state
-  main.jsx                     // React entry
-  index.css                    // Tailwind + base styles + dotted bg
+  App.jsx                  // router
+  main.jsx                 // entry
   data/
-    galleries.json             // single source of truth (24 stops, 6 clusters)
+    galleries.json         // master gallery list (locations, shows, hours)
+    thursdays.json         // weekly curated walks
+  pages/
+    Home.jsx               // browse map + CTAs
+    ThursdayWalk.jsx       // single Thursday route
+    Curate.jsx             // custom walk builder
   components/
-    Header.jsx                 // sticky title + live progress bar
-    OverviewMap.jsx            // real Mumbai map (Leaflet) with numbered pins
-    Cluster.jsx                // route section: header + rows + segments
-    GalleryRow.jsx             // gallery line: check + name + Maps link
-    ClusterGap.jsx             // inter-cluster transition pill
+    Layout.jsx Sidebar.jsx Header.jsx
+    OverviewMap.jsx Cluster.jsx ClusterGap.jsx GalleryRow.jsx
   hooks/
-    useLocalStorage.js         // persisted state hook
-    useGalleries.js            // single seam for swapping JSON → API
+    useGalleries.js useThursdays.js useLocalStorage.js
   lib/
-    distance.js                // haversine + walk/cab time helpers
+    distance.js date.js
+scripts/
+  sync-hours.mjs           // Google Places API → galleries.json hours
 ```
 
-## Swapping the JSON for an API
+## Adding a new Thursday
 
-All gallery data flows through one hook: [`src/hooks/useGalleries.js`](./src/hooks/useGalleries.js).
-Today it returns the synchronously-imported JSON. To switch to an API, change
-only the body of that hook — components don't need to know:
+Each week, edit [`src/data/thursdays.json`](./src/data/thursdays.json). You can
+use either schema — pick whichever's easier:
 
-```js
-import { useEffect, useState } from 'react'
+### Easy: flat gallery-IDs list (auto-clustered)
 
-export function useGalleries() {
-  const [state, setState] = useState({
-    clusters: [],
-    galleries: [],
-    loading: true,
-    error: null,
-  })
-
-  useEffect(() => {
-    let cancelled = false
-    fetch('/api/galleries')
-      .then((r) => r.json())
-      .then((data) => {
-        if (cancelled) return
-        setState({ ...data, loading: false, error: null })
-      })
-      .catch((err) => !cancelled && setState((s) => ({ ...s, loading: false, error: err })))
-    return () => { cancelled = true }
-  }, [])
-
-  return state
+```json
+{
+  "date": "2026-05-21",
+  "slug": "2026-05-21",
+  "label": "21 May",
+  "galleryIds": ["art-charlie", "tao", "milaaya", "47a", "tarq", "..."]
 }
 ```
 
-Rendering already keys off `clusters` + `galleries`, so the only extra UI work
-is a loading/empty state in `App.jsx` if you want one.
+The renderer groups consecutive galleries by `area` into clusters and infers
+walk/cab segments from distance. Good for a quick weekly drop-in.
 
-## Future-proofing notes
+### Detailed: explicit clusters with custom titles and notes
 
-- **Currently-showing line**: `GalleryRow` has natural room under the gallery
-  name. When the API starts returning a `show` field (`{ title, artist, endsOn }`),
-  add a single `<div>` between the name and the area row.
-- **Filtering**: gallery rendering is pure and prop-driven. Wrap the
-  `galleries` array in a filter layer before passing it down — no component
-  changes needed.
-- **localStorage key** is namespaced (`mga-`) so it won't collide if other
-  apps live on the same origin.
+```json
+{
+  "date": "2026-05-21",
+  "slug": "2026-05-21",
+  "label": "21 May",
+  "clusters": [
+    {
+      "id": 0,
+      "title": "Bandra West",
+      "note": "Start far north. Cab essential.",
+      "transport": "cab",
+      "galleryIds": ["art-charlie"]
+    }
+  ]
+}
+```
+
+Use this when you want custom cluster titles (e.g. "Fort & Kala Ghoda" merging
+two areas) or curator notes per cluster.
+
+Future Thursdays sort by date in the sidebar automatically.
+
+## Syncing opening hours from Google Places
+
+Each gallery has an `hours` field (e.g. `"11 AM – 7 PM (Tue–Sat)"`). The
+defaults in `galleries.json` are placeholders. To replace them with live
+Google data:
+
+1. Enable **Places API (New)** in a Google Cloud project
+2. Create an API key
+3. Export it:
+
+   ```bash
+   export GOOGLE_PLACES_API_KEY=your-key-here
+   ```
+
+4. Run:
+
+   ```bash
+   npm run sync-hours              # update every gallery
+   npm run sync-hours -- --only tao   # one gallery
+   npm run sync-hours -- --dry        # preview without writing
+   ```
+
+The script writes three fields per gallery:
+
+- `hours` — compact display string
+- `hoursWeekly` — full 7-day breakdown from Google
+- `placeId` — cached so re-runs skip the text-search step
+
+Cost is negligible for ~30 galleries: well within Google's $200/month free
+credit.
+
+## Notes
+
+- localStorage keys: `mga-visited-<slug>` (Thursday walks),
+  `mga-curated-walk` (the in-progress custom walk's selected gallery IDs),
+  `mga-curated-visited` (visited state on the custom walk),
+  `mga-theme` (light/dark)
+- No backend, no analytics
