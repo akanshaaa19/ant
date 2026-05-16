@@ -1,26 +1,26 @@
-import { Check, ExternalLink } from 'lucide-react'
-import { formatEndsOn } from '../lib/date.js'
+import { Check, ExternalLink } from "lucide-react";
+import { formatEndsOn } from "../lib/date.js";
 
 const toneClass = {
-  urgent: 'text-rust font-medium',
-  soon: 'text-wine',
-  normal: 'text-ink-soft/85',
-  past: 'text-ink-soft/60 line-through',
-}
+  urgent: "text-rust font-medium",
+  soon: "text-wine",
+  normal: "text-ink-soft/85",
+  past: "text-ink-soft/60 line-through",
+};
 
 export default function GalleryRow({ gallery, visited, onToggle }) {
   const handleToggle = (e) => {
-    e.stopPropagation()
-    e.preventDefault()
-    onToggle(gallery.id)
-  }
+    e.stopPropagation();
+    e.preventDefault();
+    onToggle(gallery.id);
+  };
 
-  const num = String(gallery.n).padStart(2, '0')
+  const num = String(gallery.n).padStart(2, "0");
   const ariaLabel = visited
     ? `Mark ${gallery.name} as not visited`
-    : `Mark ${gallery.name} as visited`
+    : `Mark ${gallery.name} as visited`;
 
-  const ends = gallery.show ? formatEndsOn(gallery.show.endsOn) : null
+  const ends = gallery.show ? formatEndsOn(gallery.show.endsOn) : null;
 
   return (
     <div className="group grid grid-cols-[44px_1fr_auto] items-stretch press">
@@ -51,7 +51,7 @@ export default function GalleryRow({ gallery, visited, onToggle }) {
         {/* gallery name */}
         <div
           className={`font-display text-[17px] leading-tight ${
-            visited ? 'line-through opacity-50' : ''
+            visited ? "line-through opacity-50" : ""
           }`}
           style={{ fontVariationSettings: "'opsz' 36, 'SOFT' 50, 'wght' 460" }}
         >
@@ -62,12 +62,14 @@ export default function GalleryRow({ gallery, visited, onToggle }) {
         {gallery.show?.title && (
           <div
             className={`mt-1 flex items-baseline gap-1.5 flex-wrap ${
-              visited ? 'opacity-50' : ''
+              visited ? "opacity-50" : ""
             }`}
           >
             <span
               className="italic font-display text-[13.5px] text-ink-soft leading-snug"
-              style={{ fontVariationSettings: "'opsz' 18, 'SOFT' 80, 'wght' 420" }}
+              style={{
+                fontVariationSettings: "'opsz' 18, 'SOFT' 80, 'wght' 420",
+              }}
             >
               {gallery.show.title}
             </span>
@@ -83,7 +85,7 @@ export default function GalleryRow({ gallery, visited, onToggle }) {
         {gallery.show?.artist && (
           <div
             className={`text-[12px] text-ink-soft/85 leading-snug ${
-              visited ? 'opacity-50' : ''
+              visited ? "opacity-50" : ""
             }`}
           >
             {gallery.show.artist}
@@ -93,7 +95,7 @@ export default function GalleryRow({ gallery, visited, onToggle }) {
         {/* AREA · sub · ends DATE */}
         <div
           className={`mt-1 text-[11px] text-ink-soft flex flex-wrap items-center ${
-            visited ? 'opacity-50' : ''
+            visited ? "opacity-50" : ""
           }`}
         >
           <span className="font-mono tracking-wider text-[10px] text-ink-soft/70">
@@ -133,5 +135,5 @@ export default function GalleryRow({ gallery, visited, onToggle }) {
         />
       </a>
     </div>
-  )
+  );
 }

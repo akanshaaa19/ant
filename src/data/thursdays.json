@@ -1,0 +1,58 @@
+{
+  "thursdays": [
+    {
+      "date": "2026-05-14",
+      "slug": "2026-05-14",
+      "label": "14 May",
+      "title": "Art Night Thursday",
+      "blurb": "Twenty-four galleries, ordered north to south, one long evening.",
+      "clusters": [
+        {
+          "id": 0,
+          "title": "Bandra West",
+          "note": "Start far north. Cab essential — no walking connection.",
+          "transport": "cab",
+          "galleryIds": ["art-charlie"]
+        },
+        {
+          "id": 1,
+          "title": "Worli",
+          "note": "Solo stop on Annie Besant Road. Cab from Bandra; cab onwards.",
+          "transport": "cab",
+          "galleryIds": ["tao"]
+        },
+        {
+          "id": 2,
+          "title": "Kemps Corner → Khotachi Wadi",
+          "note": "A long but possible 23-min walk between them through Girgaon — or quick cab.",
+          "transport": "mixed",
+          "galleryIds": ["milaaya", "47a"]
+        },
+        {
+          "id": 3,
+          "title": "Fort & Kala Ghoda",
+          "note": "First proper walking cluster. All six within a 600-metre radius — ~30 min on foot.",
+          "transport": "walk",
+          "galleryIds": ["tarq", "isa", "chemould", "chatterjee", "method", "fulcrum"]
+        },
+        {
+          "id": 4,
+          "title": "Nariman Point",
+          "note": "Single stop inside NCPA — bridge between Fort and Colaba clusters.",
+          "transport": "cab",
+          "galleryIds": ["piramal"]
+        },
+        {
+          "id": 5,
+          "title": "Colaba",
+          "note": "Dense heart of the route. Most stops within 5-min walks. Galleries 12-17 are practically next door; 22-23 are the same building.",
+          "transport": "walk",
+          "galleryIds": [
+            "akara-c", "strangers", "nature-morte", "jhaveri", "experimenter",
+            "dag", "akara-m", "prologue", "sakshi", "anupa", "muziris", "apre", "project88"
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -50,13 +50,15 @@ export default function Cluster({
         </div>
       </div>
 
-      {/* note */}
-      <p
-        className="mt-3 italic font-display text-[14px] text-ink-soft leading-snug"
-        style={{ fontVariationSettings: "'opsz' 14, 'SOFT' 100, 'wght' 380" }}
-      >
-        {cluster.note}
-      </p>
+      {/* note (optional — auto-clusters don't have one) */}
+      {cluster.note && (
+        <p
+          className="mt-3 italic font-display text-[14px] text-ink-soft leading-snug"
+          style={{ fontVariationSettings: "'opsz' 14, 'SOFT' 100, 'wght' 380" }}
+        >
+          {cluster.note}
+        </p>
+      )}
 
       {/* rows + intra-cluster segments */}
       <div className="mt-2">

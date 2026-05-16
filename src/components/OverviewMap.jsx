@@ -1,42 +1,68 @@
-import { useMemo, useRef } from 'react'
-import { MapContainer, TileLayer, Marker, Polyline, Popup } from 'react-leaflet'
-import L from 'leaflet'
-import 'leaflet/dist/leaflet.css'
-import { Check, ExternalLink, LocateFixed } from 'lucide-react'
-import { formatEndsOn } from '../lib/date.js'
+import { useMemo, useRef } from "react";
+import {
+  MapContainer,
+  TileLayer,
+  Marker,
+  Polyline,
+  Popup,
+} from "react-leaflet";
+import L from "leaflet";
+import "leaflet/dist/leaflet.css";
+import { Check, ExternalLink, LocateFixed } from "lucide-react";
+import { formatEndsOn } from "../lib/date.js";
 
 const popupToneClass = {
-  urgent: 'text-rust',
-  soon: 'text-wine',
-  normal: 'text-ink-soft',
-  past: 'text-ink-soft/60 line-through',
-}
+  urgent: "text-rust",
+  soon: "text-wine",
+  normal: "text-ink-soft",
+  past: "text-ink-soft/60 line-through",
+};
 
-function buildIcon(n, visited) {
+function buildIcon(n, visited, mode) {
+  if (mode === "browse") {
+    return L.divIcon({
+      className: "pin-wrap",
+      html: `<div class="pin-dot"></div>`,
+      iconSize: [14, 14],
+      iconAnchor: [7, 7],
+      popupAnchor: [0, -10],
+    });
+  }
   return L.divIcon({
-    className: 'pin-wrap',
-    html: `<div class="pin ${visited ? 'pin--visited' : ''}"><span>${n}</span></div>`,
+    className: "pin-wrap",
+    html: `<div class="pin ${visited ? "pin--visited" : ""}"><span>${n}</span></div>`,
     iconSize: [30, 30],
     iconAnchor: [15, 15],
     popupAnchor: [0, -16],
-  })
+  });
 }
 
-export default function OverviewMap({ galleries, visited, onToggle }) {
+export default function OverviewMap({
+  galleries,
+  visited,
+  onToggle,
+  mode = "route",
+}) {
+  const isBrowse = mode === "browse";
+
   const route = useMemo(
     () => galleries.map((g) => [g.lat, g.lng]),
     [galleries],
-  )
-  const bounds = route
+  );
+  const bounds =
+    route.length > 0
+      ? route
+      : [
+          [19.0632, 72.8299],
+          [18.9144, 72.8262],
+        ];
 
-  // Soft cage around the route so a stray pan can't get you lost.
-  // pad(0.3) = 30% slack on each side of the gallery footprint.
-  const maxBounds = useMemo(() => L.latLngBounds(route).pad(0.3), [route])
+  const maxBounds = useMemo(() => L.latLngBounds(bounds).pad(0.3), [bounds]);
 
-  const mapRef = useRef(null)
+  const mapRef = useRef(null);
   const recenter = () => {
-    mapRef.current?.fitBounds(bounds, { padding: [12, 12] })
-  }
+    mapRef.current?.fitBounds(bounds, { padding: [12, 12] });
+  };
 
   return (
     <div className="h-full px-4 lg:px-0 animate-fade-up-delayed">
@@ -61,56 +87,68 @@ export default function OverviewMap({ galleries, visited, onToggle }) {
             url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
           />
 
-          <Polyline
-            positions={route}
-            pathOptions={{
-              color: '#7A1E2A',
-              weight: 2,
-              dashArray: '5 5',
-              opacity: 0.7,
-            }}
-          />
+          {!isBrowse && (
+            <Polyline
+              positions={route}
+              pathOptions={{
+                color: "#7A1E2A",
+                weight: 2,
+                dashArray: "5 5",
+                opacity: 0.7,
+              }}
+            />
+          )}
 
           {galleries.map((g) => {
-            const isVisited = !!visited[g.id]
-            const ends = g.show ? formatEndsOn(g.show.endsOn) : null
+            const isVisited = !isBrowse && !!visited?.[g.id];
+            const ends = g.show ? formatEndsOn(g.show.endsOn) : null;
             return (
               <Marker
                 key={g.id}
                 position={[g.lat, g.lng]}
-                icon={buildIcon(g.n, isVisited)}
+                icon={buildIcon(g.n, isVisited, mode)}
               >
                 <Popup>
                   <div className="min-w-[200px] max-w-[240px]">
-                    {/* Tap-to-toggle eyebrow — mirrors the row pattern */}
-                    <button
-                      type="button"
-                      onClick={() => onToggle(g.id)}
-                      aria-pressed={isVisited}
-                      aria-label={
-                        isVisited
-                          ? `Mark ${g.name} as not visited`
-                          : `Mark ${g.name} as visited`
-                      }
-                      className="focus-ring -mx-1 -mt-1 mb-0.5 inline-flex items-center gap-2 px-1 py-1 rounded-md hover:bg-cream-2/60"
-                    >
-                      {isVisited ? (
-                        <span className="flex items-center justify-center w-[18px] h-[18px] rounded-[5px] bg-wine text-cream">
-                          <Check size={11} strokeWidth={3} />
+                    {!isBrowse && onToggle && (
+                      <button
+                        type="button"
+                        onClick={() => onToggle(g.id)}
+                        aria-pressed={isVisited}
+                        aria-label={
+                          isVisited
+                            ? `Mark ${g.name} as not visited`
+                            : `Mark ${g.name} as visited`
+                        }
+                        className="focus-ring -mx-1 -mt-1 mb-0.5 inline-flex items-center gap-2 px-1 py-1 rounded-md "
+                      >
+                        {isVisited ? (
+                          <span className="flex items-center justify-center w-[18px] h-[18px] rounded-[5px] bg-wine text-cream">
+                            <Check size={11} strokeWidth={3} />
+                          </span>
+                        ) : (
+                          <span className="flex items-center justify-center w-[18px] h-[18px] rounded-[5px] border border-line bg-cream" />
+                        )}
+                        <span className="font-mono text-[10px] tracking-[0.18em] uppercase text-ink-soft/85">
+                          {String(g.n).padStart(2, "0")} · {g.area}
                         </span>
-                      ) : (
-                        <span className="flex items-center justify-center w-[18px] h-[18px] rounded-[5px] border border-line bg-cream" />
-                      )}
-                      <span className="font-mono text-[10px] tracking-[0.18em] uppercase text-ink-soft/85">
-                        {String(g.n).padStart(2, '0')} · {g.area}
-                      </span>
-                    </button>
+                      </button>
+                    )}
+
+                    {isBrowse && (
+                      <div className="font-mono text-[10px] tracking-[0.18em] uppercase text-ink-soft/85 mb-0.5">
+                        {g.area}
+                      </div>
+                    )}
 
                     <div
                       className={`font-display text-[16px] leading-tight text-ink mt-0.5 ${
-                        isVisited ? 'line-through opacity-50' : ''
+                        isVisited ? "line-through opacity-50" : ""
                       }`}
-                      style={{ fontVariationSettings: "'opsz' 36, 'SOFT' 50, 'wght' 480" }}
+                      style={{
+                        fontVariationSettings:
+                          "'opsz' 36, 'SOFT' 50, 'wght' 480",
+                      }}
                     >
                       {g.name}
                     </div>
@@ -118,12 +156,15 @@ export default function OverviewMap({ galleries, visited, onToggle }) {
                     {g.show?.title && (
                       <div
                         className={`mt-1.5 flex items-baseline gap-1.5 flex-wrap ${
-                          isVisited ? 'opacity-50' : ''
+                          isVisited ? "opacity-50" : ""
                         }`}
                       >
                         <span
                           className="italic font-display text-[13px] text-ink-soft leading-snug"
-                          style={{ fontVariationSettings: "'opsz' 18, 'SOFT' 80, 'wght' 420" }}
+                          style={{
+                            fontVariationSettings:
+                              "'opsz' 18, 'SOFT' 80, 'wght' 420",
+                          }}
                         >
                           {g.show.title}
                         </span>
@@ -137,7 +178,7 @@ export default function OverviewMap({ galleries, visited, onToggle }) {
                     {g.show?.artist && (
                       <div
                         className={`text-[11.5px] text-ink-soft/85 leading-snug ${
-                          isVisited ? 'opacity-50' : ''
+                          isVisited ? "opacity-50" : ""
                         }`}
                       >
                         {g.show.artist}
@@ -164,15 +205,14 @@ export default function OverviewMap({ galleries, visited, onToggle }) {
                   </div>
                 </Popup>
               </Marker>
-            )
+            );
           })}
         </MapContainer>
 
-        {/* Recenter button — pinned safety net if the user drifts */}
         <button
           type="button"
           onClick={recenter}
-          aria-label="Recenter map on the full route"
+          aria-label="Recenter map"
           className="absolute top-3 right-3 z-[1000] focus-ring inline-flex items-center gap-1.5
                      px-2.5 py-1.5 rounded-md
                      bg-cream/95 backdrop-blur-sm border border-line/80
@@ -185,5 +225,5 @@ export default function OverviewMap({ galleries, visited, onToggle }) {
         </button>
       </div>
     </div>
-  )
+  );
 }
