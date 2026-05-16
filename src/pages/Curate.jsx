@@ -655,7 +655,7 @@ function PickerRow({ gallery, selected, onAdd, onRemove }) {
         onClick={selected ? onRemove : onAdd}
         className="focus-ring text-left py-2 pr-2 rounded-r-md"
       >
-        <GalleryBody gallery={gallery} dim={selected} />
+        <GalleryBody gallery={gallery} />
       </button>
     </div>
   );
