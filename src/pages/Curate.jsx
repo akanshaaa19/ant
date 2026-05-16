@@ -23,8 +23,10 @@ import {
   Clock,
   Footprints,
   GripVertical,
+  Link2,
   Plus,
   RotateCcw,
+  Share2,
   Trash2,
   X,
 } from "lucide-react";
@@ -40,6 +42,7 @@ import {
   haversineKm,
   walkMinutesFromKm,
 } from "../lib/distance.js";
+import { isConfigured, saveWalk } from "../lib/supabase.js";
 
 const STORAGE_KEY = "mga-curated-walk";
 const VISITED_KEY = "mga-curated-visited";
@@ -386,6 +389,10 @@ function OrderStep({
           </SortableContext>
         </DndContext>
 
+        {isConfigured && (
+          <ShareWalkPanel galleryIds={state.selectedIds} />
+        )}
+
         {visitedCount > 0 && (
           <div className="mt-5 flex justify-end">
             <button
@@ -402,6 +409,131 @@ function OrderStep({
         )}
       </section>
     </>
+  );
+}
+
+function ShareWalkPanel({ galleryIds }) {
+  const [name, setName] = useState("");
+  const [status, setStatus] = useState("idle"); // 'idle' | 'saving' | 'saved' | 'error'
+  const [shareUrl, setShareUrl] = useState("");
+  const [errorMsg, setErrorMsg] = useState("");
+  const [copied, setCopied] = useState(false);
+
+  const submit = async (e) => {
+    e.preventDefault();
+    if (!name.trim() || galleryIds.length === 0 || status === "saving") return;
+    setStatus("saving");
+    setErrorMsg("");
+    try {
+      const id = await saveWalk({ name, galleryIds });
+      const url = `${window.location.origin}/walk/${id}`;
+      setShareUrl(url);
+      setStatus("saved");
+    } catch (err) {
+      setErrorMsg(err.message || "Couldn't save walk");
+      setStatus("error");
+    }
+  };
+
+  const copy = async () => {
+    try {
+      await navigator.clipboard?.writeText(shareUrl);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 1800);
+    } catch {
+      window.prompt("Copy this link:", shareUrl);
+    }
+  };
+
+  const reset = () => {
+    setName("");
+    setShareUrl("");
+    setStatus("idle");
+    setErrorMsg("");
+  };
+
+  if (status === "saved") {
+    return (
+      <div className="mt-6 rounded-md border border-moss/40 bg-moss/5 p-4">
+        <div className="eyebrow text-moss">Saved</div>
+        <p
+          className="mt-1 font-display text-[14px] text-ink leading-snug"
+          style={{ fontVariationSettings: "'opsz' 18, 'SOFT' 80, 'wght' 440" }}
+        >
+          Your walk is live at this link.
+        </p>
+        <div className="mt-3 flex items-center gap-2">
+          <input
+            type="text"
+            readOnly
+            value={shareUrl}
+            onFocus={(e) => e.target.select()}
+            className="focus-ring flex-1 min-w-0 px-2 py-1.5 rounded-md border border-line/70
+                       bg-cream text-ink font-mono text-[11px]"
+          />
+          <button
+            type="button"
+            onClick={copy}
+            className="focus-ring press shrink-0 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md
+                       bg-wine text-cream font-mono text-[10px] tracking-[0.16em] uppercase"
+          >
+            {copied ? <Check size={12} /> : <Link2 size={12} />}
+            {copied ? "Copied" : "Copy"}
+          </button>
+        </div>
+        <button
+          type="button"
+          onClick={reset}
+          className="focus-ring mt-3 text-ink-soft hover:text-wine font-mono text-[10px] tracking-[0.16em] uppercase"
+        >
+          Save another version
+        </button>
+      </div>
+    );
+  }
+
+  return (
+    <form onSubmit={submit} className="mt-6 rounded-md border border-line/70 bg-cream-2/40 p-4">
+      <label
+        htmlFor="walk-name"
+        className="eyebrow"
+      >
+        Name your walk
+      </label>
+      <input
+        id="walk-name"
+        type="text"
+        value={name}
+        onChange={(e) => setName(e.target.value)}
+        placeholder="e.g. Sunday Colaba crawl"
+        maxLength={60}
+        className="focus-ring mt-1 w-full px-2.5 py-2 rounded-md border border-line/70
+                   bg-cream text-ink text-[14px]"
+      />
+      <div className="mt-3 flex items-center justify-between gap-3">
+        <p
+          className="text-[11.5px] text-ink-soft italic font-display leading-snug"
+          style={{ fontVariationSettings: "'opsz' 14, 'SOFT' 100, 'wght' 380" }}
+        >
+          Anyone with the link can view your walk.
+        </p>
+        <button
+          type="submit"
+          disabled={!name.trim() || galleryIds.length === 0 || status === "saving"}
+          className="focus-ring press shrink-0 inline-flex items-center gap-2 px-3 py-1.5 rounded-md
+                     bg-wine text-cream font-mono text-[10px] tracking-[0.18em] uppercase
+                     disabled:opacity-40 disabled:cursor-not-allowed"
+        >
+          <Share2 size={12} />
+          {status === "saving" ? "Saving…" : "Save & share"}
+        </button>
+      </div>
+      {status === "error" && (
+        <p className="mt-2 font-mono text-[10.5px] text-rust">
+          {errorMsg}
+        </p>
+      )}
+    </form>
   );
 }
 

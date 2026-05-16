@@ -100,6 +100,50 @@ two areas) or curator notes per cluster.
 
 Future Thursdays sort by date in the sidebar automatically.
 
+## Saving + sharing walks (Supabase setup)
+
+The Curate page has an optional **Save & share** button. It writes the walk to
+a Supabase table and gives you a short URL like `/walk/k3m2x9` that anyone can
+open to see the route, the map, and the gallery list. Without Supabase
+configured, the button is hidden — everything else works.
+
+### One-time setup
+
+1. Create a free Supabase project at <https://supabase.com>
+2. In the SQL editor, run:
+
+   ```sql
+   create table walks (
+     id text primary key,
+     name text not null,
+     gallery_ids text[] not null,
+     created_at timestamptz default now()
+   );
+
+   alter table walks enable row level security;
+
+   create policy "Anyone can read walks"
+     on walks for select using (true);
+
+   create policy "Anyone can create walks"
+     on walks for insert with check (true);
+   ```
+
+3. Copy your project's URL and anon (public) key from **Settings → API**.
+4. Create `.env.local` at the project root (it's gitignored):
+
+   ```bash
+   VITE_SUPABASE_URL=https://your-project.supabase.co
+   VITE_SUPABASE_ANON_KEY=eyJhbGciOi...
+   ```
+
+5. Restart the dev server. The "Save & share" button appears in step 2 of
+   `/curate`.
+
+The free tier (500 MB DB, unlimited API requests up to 5 GB bandwidth/month)
+covers thousands of walks. Walks are immutable once saved; if you need to
+delete one, do it from the Supabase dashboard.
+
 ## Syncing opening hours from Google Places
 
 Each gallery has an `hours` field (e.g. `"11 AM – 7 PM (Tue–Sat)"`). The
