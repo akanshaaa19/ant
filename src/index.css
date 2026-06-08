@@ -35,7 +35,8 @@ html {
 
 body {
   margin: 0;
-  font-family: 'Inter Tight', ui-sans-serif, system-ui, sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica,
+    Arial, sans-serif;
   color: rgb(var(--ink));
   background-color: rgb(var(--cream));
   background-image: radial-gradient(rgb(var(--ink) / 0.06) 1px, transparent 1px);
@@ -95,7 +96,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
   font-size: 11px;
   font-weight: 600;
   letter-spacing: 0.02em;
@@ -138,7 +139,7 @@ body {
 }
 .leaflet-popup-content {
   margin: 12px 14px !important;
-  font-family: 'Inter Tight', ui-sans-serif, system-ui, sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
 }
 .leaflet-popup-close-button {
   color: rgb(var(--ink-soft)) !important;
@@ -158,7 +159,7 @@ body {
 /* Match map container background to cream while tiles load */
 .leaflet-container {
   background: rgb(var(--cream-2)) !important;
-  font-family: 'Inter Tight', ui-sans-serif, system-ui, sans-serif !important;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif !important;
 }
 
 /* Dark-mode tile trick: invert flips dark<->light, hue-rotate(180)

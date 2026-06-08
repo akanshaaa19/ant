@@ -35,6 +35,7 @@ import OverviewMap from "../components/OverviewMap.jsx";
 import { useLayoutContext } from "../components/Layout.jsx";
 import { useGalleries } from "../hooks/useGalleries.js";
 import { useLocalStorage } from "../hooks/useLocalStorage.js";
+import { formatEndsOn } from "../lib/date.js";
 import {
   cabMinutesFromKm,
   formatKm,
@@ -47,6 +48,13 @@ import { isConfigured, saveWalk } from "../lib/supabase.js";
 const STORAGE_KEY = "mga-curated-walk";
 const VISITED_KEY = "mga-curated-visited";
 const WALK_THRESHOLD_KM = 1.2;
+
+const endsToneClass = {
+  urgent: "text-rust font-medium",
+  soon: "text-wine",
+  normal: "text-ink-soft/85",
+  past: "text-ink-soft/60 line-through",
+};
 
 const defaultState = {
   selectedIds: [],
@@ -662,6 +670,8 @@ function PickerRow({ gallery, selected, onAdd, onRemove }) {
 }
 
 function GalleryBody({ gallery, dim, num }) {
+  const ends = gallery.show ? formatEndsOn(gallery.show.endsOn) : null;
+
   return (
     <div className={`min-w-0 py-2 pr-1 ${dim ? "opacity-50" : ""}`}>
       <div
@@ -673,7 +683,29 @@ function GalleryBody({ gallery, dim, num }) {
         {gallery.name}
       </div>
 
-      <div className="mt-0.5 flex flex-wrap items-center text-[11px] text-ink-soft">
+      {/* current show — title (+ NEW pill) and artist, when we have it */}
+      {gallery.show?.title && (
+        <div className="mt-0.5 flex items-baseline gap-1.5 flex-wrap">
+          <span
+            className="italic font-display text-[13px] text-ink-soft leading-snug"
+            style={{ fontVariationSettings: "'opsz' 18, 'SOFT' 80, 'wght' 420" }}
+          >
+            {gallery.show.title}
+          </span>
+          {gallery.show.isNew && (
+            <span className="font-mono text-[8.5px] tracking-[0.18em] uppercase px-1 py-0.5 rounded-sm bg-wine text-cream leading-none">
+              New
+            </span>
+          )}
+        </div>
+      )}
+      {gallery.show?.artist && (
+        <div className="text-[11.5px] text-ink-soft/85 leading-snug">
+          {gallery.show.artist}
+        </div>
+      )}
+
+      <div className="mt-1 flex flex-wrap items-center text-[11px] text-ink-soft">
         {num && (
           <>
             <span className="font-mono tracking-wider text-[10px] text-ink-soft/70">
@@ -687,6 +719,16 @@ function GalleryBody({ gallery, dim, num }) {
         </span>
         <span className="mx-1.5 text-line">·</span>
         <span className="italic">{gallery.sub}</span>
+        {ends && (
+          <>
+            <span className="mx-1.5 text-line">·</span>
+            <span
+              className={`font-mono uppercase tracking-wider text-[10px] ${endsToneClass[ends.tone]}`}
+            >
+              {ends.text}
+            </span>
+          </>
+        )}
       </div>
 
       {gallery.hours && (

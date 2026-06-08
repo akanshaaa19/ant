@@ -77,7 +77,7 @@ export default function OverviewMap({
           boundsOptions={{ padding: [12, 12] }}
           maxBounds={maxBounds}
           maxBoundsViscosity={1.0}
-          minZoom={11}
+          minZoom={14}
           scrollWheelZoom={false}
           zoomControl={true}
           className="w-full h-full"

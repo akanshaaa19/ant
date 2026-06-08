@@ -1,6 +1,53 @@
 {
   "thursdays": [
     {
+      "date": "2026-06-11",
+      "slug": "2026-06-11",
+      "label": "11 June",
+      "title": "Art Night Thursday",
+      "blurb": "Twenty-two galleries on view, ordered north to south, one long evening.",
+      "clusters": [
+        {
+          "id": 0,
+          "title": "Bandra West",
+          "note": "Start far north. Cab essential — no walking connection.",
+          "transport": "cab",
+          "galleryIds": ["art-charlie"]
+        },
+        {
+          "id": 1,
+          "title": "Kemps Corner",
+          "note": "Solo stop on Malabar Hill. Cab from Bandra; cab onwards to Fort.",
+          "transport": "cab",
+          "galleryIds": ["milaaya"]
+        },
+        {
+          "id": 2,
+          "title": "Ballard Estate, Fort & Kala Ghoda",
+          "note": "First proper walking cluster. All seven within a ~700-metre radius — roughly 30 min on foot.",
+          "transport": "walk",
+          "galleryIds": ["tarq", "subcontinent", "isa", "mirchandani-steinruecke", "chatterjee", "method", "fulcrum"]
+        },
+        {
+          "id": 3,
+          "title": "Nariman Point",
+          "note": "Single stop inside NCPA — bridge between Fort and Colaba clusters.",
+          "transport": "cab",
+          "galleryIds": ["piramal"]
+        },
+        {
+          "id": 4,
+          "title": "Colaba",
+          "note": "Dense heart of the route. Most stops within 5-min walks; the last three are the same building.",
+          "transport": "walk",
+          "galleryIds": [
+            "akara-c", "strangers", "nature-morte", "experimenter", "dag",
+            "chemould-colab", "akara-m", "sakshi", "anupa", "muziris", "apre", "project88"
+          ]
+        }
+      ]
+    },
+    {
       "date": "2026-05-14",
       "slug": "2026-05-14",
       "label": "14 May",

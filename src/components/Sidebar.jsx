@@ -1,10 +1,8 @@
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import { createPortal } from 'react-dom'
 import { NavLink } from 'react-router-dom'
 import {
   Calendar,
-  ChevronDown,
-  ChevronRight,
   Home,
   Map as MapIcon,
   X,
@@ -64,7 +62,7 @@ export default function Sidebar({ open, onClose }) {
 
         <nav className="flex-1 overflow-y-auto px-3 py-3 space-y-0.5">
           <SidebarLink to="/" icon={Home} label="Home" onClick={onClose} end />
-          <ThursdayMenu onClose={onClose} />
+          <ThursdayLink onClose={onClose} />
           <SidebarLink to="/curate" icon={MapIcon} label="Curate your own walk" onClick={onClose} />
         </nav>
 
@@ -104,52 +102,30 @@ function SidebarLink({ to, icon: Icon, label, onClick, end }) {
   )
 }
 
-function ThursdayMenu({ onClose }) {
-  const { thursdays } = useThursdays()
-  const [expanded, setExpanded] = useState(true)
+// Single entry that always points at the current Art Night Thursday walk.
+// Update the upcoming Thursday in thursdays.json each month and this follows it.
+function ThursdayLink({ onClose }) {
+  const { upcoming } = useThursdays()
 
-  return (
-    <div>
-      <button
-        type="button"
-        onClick={() => setExpanded((v) => !v)}
-        aria-expanded={expanded}
-        className="focus-ring press w-full flex items-center gap-3 px-3 py-2.5 rounded-md
-                   font-mono text-[11px] tracking-[0.16em] uppercase
-                   text-ink-soft hover:text-wine hover:bg-cream-2/60"
+  if (!upcoming) {
+    return (
+      <div
+        className="flex items-center gap-3 px-3 py-2.5 rounded-md
+                   font-mono text-[11px] tracking-[0.16em] uppercase text-ink-soft/40"
+        aria-disabled="true"
       >
         <Calendar size={14} className="opacity-80" />
-        <span className="flex-1 text-left">Art Night Thursday</span>
-        {expanded ? <ChevronDown size={13} /> : <ChevronRight size={13} />}
-      </button>
+        <span>Art Night Thursday</span>
+      </div>
+    )
+  }
 
-      {expanded && (
-        <div className="ml-7 mt-0.5 mb-1 border-l border-line/60 pl-2 space-y-0.5">
-          {thursdays.length === 0 && (
-            <div className="px-3 py-2 font-mono text-[10px] tracking-wider uppercase text-ink-soft/60">
-              Coming soon
-            </div>
-          )}
-          {thursdays.map((t) => (
-            <NavLink
-              key={t.slug}
-              to={`/thursday/${t.slug}`}
-              onClick={onClose}
-              className={({ isActive }) =>
-                `focus-ring press block px-3 py-2 rounded-md
-                 font-mono text-[10.5px] tracking-[0.14em] uppercase
-                 ${
-                   isActive
-                     ? 'bg-wine/10 text-wine'
-                     : 'text-ink-soft hover:text-wine hover:bg-cream-2/60'
-                 }`
-              }
-            >
-              {t.label}
-            </NavLink>
-          ))}
-        </div>
-      )}
-    </div>
+  return (
+    <SidebarLink
+      to={`/thursday/${upcoming.slug}`}
+      icon={Calendar}
+      label="Art Night Thursday"
+      onClick={onClose}
+    />
   )
 }
