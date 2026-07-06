@@ -1,6 +1,53 @@
 {
   "thursdays": [
     {
+      "date": "2026-07-09",
+      "slug": "2026-07-09",
+      "label": "9 July",
+      "title": "Art Night Thursday",
+      "blurb": "Twenty-five galleries on view, ordered north to south, one long evening.",
+      "clusters": [
+        {
+          "id": 0,
+          "title": "Bandra West",
+          "note": "Start far north. Cab essential — no walking connection.",
+          "transport": "cab",
+          "galleryIds": ["art-charlie"]
+        },
+        {
+          "id": 1,
+          "title": "Worli",
+          "note": "Solo stop on Annie Besant Road. Cab from Bandra; cab onwards.",
+          "transport": "cab",
+          "galleryIds": ["tao"]
+        },
+        {
+          "id": 2,
+          "title": "Kemps Corner → Khotachi Wadi",
+          "note": "A long but possible 23-min walk between them through Girgaon — or quick cab.",
+          "transport": "mixed",
+          "galleryIds": ["milaaya", "47a"]
+        },
+        {
+          "id": 3,
+          "title": "Ballard Estate, Fort & Kala Ghoda",
+          "note": "First proper walking cluster. Ordered north to south, all within a ~1 km stretch.",
+          "transport": "walk",
+          "galleryIds": ["isa", "mirchandani-steinruecke", "rukshaan", "chemould", "subcontinent", "maxima", "chatterjee", "method", "fulcrum"]
+        },
+        {
+          "id": 4,
+          "title": "Colaba",
+          "note": "Dense heart of the route. Most stops within 5-min walks; the last three are the same building.",
+          "transport": "walk",
+          "galleryIds": [
+            "akara-c", "strangers", "nature-morte", "jhaveri", "experimenter",
+            "dag", "akara-m", "art-musings", "anupa", "muziris", "apre", "project88"
+          ]
+        }
+      ]
+    },
+    {
       "date": "2026-06-11",
       "slug": "2026-06-11",
       "label": "11 June",
