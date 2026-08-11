@@ -1,6 +1,67 @@
 {
   "thursdays": [
     {
+      "date": "2026-08-13",
+      "slug": "2026-08-13",
+      "label": "13 August",
+      "title": "Art Night Thursday",
+      "blurb": "Twenty-eight galleries on view, ordered north to south, one long evening.",
+      "clusters": [
+        {
+          "id": 0,
+          "title": "Bandra West",
+          "note": "Start far north. Cab essential — no walking connection.",
+          "transport": "cab",
+          "galleryIds": ["art-charlie"]
+        },
+        {
+          "id": 1,
+          "title": "Prabhadevi",
+          "note": "Solo stop. Cab from Bandra; cab onwards to Worli.",
+          "transport": "cab",
+          "galleryIds": ["six-continuum"]
+        },
+        {
+          "id": 2,
+          "title": "Worli",
+          "note": "Solo stop on Dr Annie Besant Road. Cab between neighbours.",
+          "transport": "cab",
+          "galleryIds": ["art-soul"]
+        },
+        {
+          "id": 3,
+          "title": "Kemps Corner → Khotachi Wadi",
+          "note": "A long but possible 23-min walk between them through Girgaon — or quick cab.",
+          "transport": "mixed",
+          "galleryIds": ["milaaya", "47a"]
+        },
+        {
+          "id": 4,
+          "title": "Ballard Estate, Fort & Kala Ghoda",
+          "note": "The main walking cluster. Ordered north to south, all within a ~1 km stretch.",
+          "transport": "walk",
+          "galleryIds": ["tarq", "isa", "mirchandani-steinruecke", "rukshaan", "chemould", "subcontinent", "kynkyny", "maxima", "chatterjee", "fulcrum"]
+        },
+        {
+          "id": 5,
+          "title": "Nariman Point",
+          "note": "Single stop inside NCPA — bridge between Fort and Colaba clusters.",
+          "transport": "cab",
+          "galleryIds": ["piramal"]
+        },
+        {
+          "id": 6,
+          "title": "Colaba",
+          "note": "Dense heart of the route. Most stops within 5-min walks.",
+          "transport": "walk",
+          "galleryIds": [
+            "strangers", "nature-morte", "jhaveri", "experimenter", "chemould-colab",
+            "dag", "akara-m", "prologue", "sakshi", "anupa", "muziris", "project88"
+          ]
+        }
+      ]
+    },
+    {
       "date": "2026-07-09",
       "slug": "2026-07-09",
       "label": "9 July",
