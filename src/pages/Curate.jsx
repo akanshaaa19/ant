@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   DndContext,
   KeyboardSensor,
@@ -23,7 +24,6 @@ import {
   Clock,
   Footprints,
   GripVertical,
-  Link2,
   Plus,
   RotateCcw,
   Share2,
@@ -421,11 +421,10 @@ function OrderStep({
 }
 
 function ShareWalkPanel({ galleryIds }) {
+  const navigate = useNavigate();
   const [name, setName] = useState("");
-  const [status, setStatus] = useState("idle"); // 'idle' | 'saving' | 'saved' | 'error'
-  const [shareUrl, setShareUrl] = useState("");
+  const [status, setStatus] = useState("idle"); // 'idle' | 'saving' | 'error'
   const [errorMsg, setErrorMsg] = useState("");
-  const [copied, setCopied] = useState(false);
 
   const submit = async (e) => {
     e.preventDefault();
@@ -434,71 +433,13 @@ function ShareWalkPanel({ galleryIds }) {
     setErrorMsg("");
     try {
       const id = await saveWalk({ name, galleryIds });
-      const url = `${window.location.origin}/walk/${id}`;
-      setShareUrl(url);
-      setStatus("saved");
+      // Redirect to the shared walk page once it's live.
+      navigate(`/walk/${id}`);
     } catch (err) {
       setErrorMsg(err.message || "Couldn't save walk");
       setStatus("error");
     }
   };
-
-  const copy = async () => {
-    try {
-      await navigator.clipboard?.writeText(shareUrl);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 1800);
-    } catch {
-      window.prompt("Copy this link:", shareUrl);
-    }
-  };
-
-  const reset = () => {
-    setName("");
-    setShareUrl("");
-    setStatus("idle");
-    setErrorMsg("");
-  };
-
-  if (status === "saved") {
-    return (
-      <div className="mt-6 rounded-md border border-moss/40 bg-moss/5 p-4">
-        <div className="eyebrow text-moss">Saved</div>
-        <p
-          className="mt-1 font-display text-[14px] text-ink leading-snug"
-          style={{ fontVariationSettings: "'opsz' 18, 'SOFT' 80, 'wght' 440" }}
-        >
-          Your walk is live at this link.
-        </p>
-        <div className="mt-3 flex items-center gap-2">
-          <input
-            type="text"
-            readOnly
-            value={shareUrl}
-            onFocus={(e) => e.target.select()}
-            className="focus-ring flex-1 min-w-0 px-2 py-1.5 rounded-md border border-line/70
-                       bg-cream text-ink font-mono text-[11px]"
-          />
-          <button
-            type="button"
-            onClick={copy}
-            className="focus-ring press shrink-0 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md
-                       bg-wine text-cream font-mono text-[10px] tracking-[0.16em] uppercase"
-          >
-            {copied ? <Check size={12} /> : <Link2 size={12} />}
-            {copied ? "Copied" : "Copy"}
-          </button>
-        </div>
-        <button
-          type="button"
-          onClick={reset}
-          className="focus-ring mt-3 text-ink-soft hover:text-wine font-mono text-[10px] tracking-[0.16em] uppercase"
-        >
-          Save another version
-        </button>
-      </div>
-    );
-  }
 
   return (
     <form onSubmit={submit} className="mt-6 rounded-md border border-line/70 bg-cream-2/40 p-4">
