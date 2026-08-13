@@ -122,7 +122,7 @@ function ThursdayLink({ onClose }) {
 
   return (
     <SidebarLink
-      to={`/thursday/${upcoming.slug}`}
+      to="/art-night"
       icon={Calendar}
       label="Art Night Thursday"
       onClick={onClose}

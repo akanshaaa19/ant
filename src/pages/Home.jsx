@@ -92,7 +92,7 @@ function CTAThursday({ upcoming }) {
 
   return (
     <CTACard
-      to={`/thursday/${upcoming.slug}`}
+      to="/art-night"
       icon={CalendarClock}
       eyebrow={upcoming.label}
       title="Explore next Art Night Thursday"

@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import { Link, useParams } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import { ArrowLeft, RotateCcw } from 'lucide-react'
 import Header from '../components/Header.jsx'
 import OverviewMap from '../components/OverviewMap.jsx'
@@ -52,12 +52,13 @@ const infoModal = {
 }
 
 export default function ThursdayWalk() {
-  const { slug } = useParams()
   const { openMenu, headerWrapRef } = useLayoutContext()
-  const { findBySlug } = useThursdays()
+  const { current } = useThursdays()
 
-  const thursday = findBySlug(slug)
-  const storageKey = `mga-visited-${slug}`
+  const thursday = current
+  // Key progress by the walk's own date so it stays per-walk even though the
+  // URL (/art-night) is generic.
+  const storageKey = `mga-visited-${thursday?.slug ?? 'art-night'}`
   const [visited, setVisited] = useLocalStorage(storageKey, {})
 
   const galleries = thursday?.galleries ?? []

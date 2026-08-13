@@ -82,11 +82,16 @@ export function useThursdays() {
 
   const upcoming = thursdays.find((t) => new Date(t.date) >= today) || null
 
+  const current = buildThursday(
+    upcoming || thursdays[thursdays.length - 1] || null,
+    byId,
+  )
+
   const findBySlug = (slug) =>
     buildThursday(
       thursdays.find((t) => t.slug === slug),
       byId,
     )
 
-  return { thursdays, upcoming, findBySlug }
+  return { thursdays, upcoming, current, findBySlug }
 }

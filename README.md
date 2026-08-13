@@ -5,8 +5,10 @@ Night Thursday** route each week, and building your own walks. Three pages:
 
 - **/** — map of all galleries + entry points to the next Thursday and the
   custom-walk builder
-- **/thursday/:slug** — a curated Thursday walk (numbered route, segments,
-  visited progress saved per-walk)
+- **/art-night** — the current curated Art Night walk (numbered route,
+  segments, visited progress saved per-walk). This generic link always
+  resolves to the upcoming walk (or the most recent one), so it never changes
+  week to week.
 - **/curate** — two-step walk builder: pick galleries, then drag to reorder.
   Visited tracking saved on-device.
 

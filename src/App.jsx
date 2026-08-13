@@ -23,7 +23,7 @@ export default function App() {
       <Routes>
         <Route element={<Layout />}>
           <Route path="/" element={<Home />} />
-          <Route path="/thursday/:slug" element={<ThursdayWalk />} />
+          <Route path="/art-night" element={<ThursdayWalk />} />
           <Route path="/curate" element={<Curate />} />
           <Route path="/walk/:id" element={<SharedWalk />} />
           <Route path="*" element={<Navigate to="/" replace />} />
