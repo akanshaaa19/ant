@@ -87,11 +87,5 @@ export function useThursdays() {
     byId,
   )
 
-  const findBySlug = (slug) =>
-    buildThursday(
-      thursdays.find((t) => t.slug === slug),
-      byId,
-    )
-
-  return { thursdays, upcoming, current, findBySlug }
+  return { thursdays, upcoming, current }
 }
