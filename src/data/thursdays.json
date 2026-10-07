@@ -1,6 +1,75 @@
 {
   "thursdays": [
     {
+      "date": "2026-10-08",
+      "slug": "2026-10-08",
+      "label": "8 October",
+      "title": "Art Night Thursday",
+      "blurb": "Thirty galleries on view, ordered north to south, one long evening.",
+      "clusters": [
+        {
+          "id": 0,
+          "title": "Bandra West",
+          "note": "Start far north. Cab essential — no walking connection.",
+          "transport": "cab",
+          "galleryIds": ["art-charlie"]
+        },
+        {
+          "id": 1,
+          "title": "Prabhadevi",
+          "note": "Solo stop. Cab from Bandra; cab onwards.",
+          "transport": "cab",
+          "galleryIds": ["six-continuum"]
+        },
+        {
+          "id": 2,
+          "title": "Worli",
+          "note": "Solo stop on Dr Annie Besant Road. Cab between neighbours.",
+          "transport": "cab",
+          "galleryIds": ["art-soul"]
+        },
+        {
+          "id": 3,
+          "title": "Byculla",
+          "note": "Eastern detour inside Great Eastern Home. Cab in and out.",
+          "transport": "cab",
+          "galleryIds": ["nine-fish"]
+        },
+        {
+          "id": 4,
+          "title": "Kemps Corner → Khotachi Wadi",
+          "note": "A long but possible 23-min walk between them through Girgaon — or quick cab.",
+          "transport": "mixed",
+          "galleryIds": ["milaaya", "47a"]
+        },
+        {
+          "id": 5,
+          "title": "Ballard Estate, Fort & Kala Ghoda",
+          "note": "The main walking cluster. Ordered north to south, all within a ~1 km stretch.",
+          "transport": "walk",
+          "galleryIds": ["tarq", "isa", "mirchandani-steinruecke", "rukshaan", "chemould", "subcontinent", "maxima", "kynkyny", "artisans"]
+        },
+        {
+          "id": 6,
+          "title": "Nariman Point",
+          "note": "Single stop inside NCPA — bridge between Fort and Colaba clusters.",
+          "transport": "cab",
+          "galleryIds": ["piramal"]
+        },
+        {
+          "id": 7,
+          "title": "Colaba",
+          "note": "Dense heart of the route. Most stops within 5-min walks.",
+          "transport": "walk",
+          "galleryIds": [
+            "akara-c", "strangers", "nature-morte", "jhaveri", "experimenter",
+            "dag", "chemould-colab", "art-musings", "maskara", "sakshi", "anupa",
+            "muziris", "apre", "project88"
+          ]
+        }
+      ]
+    },
+    {
       "date": "2026-09-10",
       "slug": "2026-09-10",
       "label": "10 September",
